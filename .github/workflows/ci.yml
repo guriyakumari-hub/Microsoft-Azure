@@ -1,15 +1,20 @@
-name: CI
+name: Deploy Static Site
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    branches:
+      - main
 
 jobs:
-  check:
+  deploy:
     runs-on: ubuntu-latest
+    environment: env
     steps:
       - uses: actions/checkout@v4
-      - name: Ensure index.html exists
-        run: test -f index.html
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
